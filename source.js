@@ -20,19 +20,14 @@ function addPosts(posts) {
 	  let newCell1 = newRow.insertCell(0);
 	  let newCell2 = newRow.insertCell(1);
 	  let newCell3 = newRow.insertCell(2);
-      //let detailsBtn = document.createElement("BUTTON");
       let deleteBtn = document.createElement("BUTTON");
       let updateBtn = document.createElement("BUTTON");
-      //let txtDetails = document.createTextNode("Details");
       let txtDelete = document.createTextNode("Delete");
       let txtUpdate = document.createTextNode("Update");
 
-  	  //detailsBtn.setAttribute('class','btn btn-primary badge-pill btn-sm');
   	  deleteBtn.setAttribute('class','btn btn-danger badge-pill btn-sm');
   	  updateBtn.setAttribute('class','btn btn-warning badge-pill btn-sm');
 
-      //detailsBtn.appendChild(txtDetails);
-      //detailsBtn.addEventListener('click',function(){detailsView(posts[post].id)});
       deleteBtn.appendChild(txtDelete);
       deleteBtn.addEventListener('click',function(){deleteAlert(posts[post].id)});
       updateBtn.appendChild(txtUpdate);
@@ -40,7 +35,6 @@ function addPosts(posts) {
 
 	  newCell1.innerHTML = posts[post].id;
 	  newCell2.innerHTML = posts[post].title;
-	  //newCell3.appendChild(detailsBtn);
 	  newCell3.appendChild(updateBtn);
 	  newCell3.appendChild(deleteBtn);
 	}
@@ -67,10 +61,6 @@ function deletPost(id){
 		alert(err);
 	}
 
-};
-
-function detailsView(id){
-	alert('details view clicked');
 };
 
 function updateView(id){
