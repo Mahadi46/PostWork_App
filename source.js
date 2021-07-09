@@ -3,7 +3,7 @@ window.addEventListener('DOMContentLoaded',getPosts);
 function getPosts(){
     try{
     	let url = 'https://jsonplaceholder.typicode.com/posts'
-    	fetch(url).then((response)=>response.json()).then((posts)=>{
+    	fetch(url).then((res)=>res.json()).then((posts)=>{
     		addPosts(posts);
     	})
     }catch(error){
@@ -20,26 +20,27 @@ function addPosts(posts) {
 	  let newCell1 = newRow.insertCell(0);
 	  let newCell2 = newRow.insertCell(1);
 	  let newCell3 = newRow.insertCell(2);
-      let deleteBtn = document.createElement("BUTTON");
-      let updateBtn = document.createElement("BUTTON");
-      let txtDelete = document.createTextNode("Delete");
-      let txtUpdate = document.createTextNode("Update");
+      
+          let deleteBtn = document.createElement("BUTTON");
+          let editBtn = document.createElement("BUTTON");
+      
+          let txtDelete = document.createTextNode("Delete");
+          let txtEdit = document.createTextNode("Edit");
 
-  	  deleteBtn.setAttribute('class','btn btn-danger badge-pill btn-sm');
-  	  updateBtn.setAttribute('class','btn btn-warning badge-pill btn-sm');
+          deleteBtn.setAttribute('class','btn btn-danger badge-pill btn-sm');
+          editBtn.setAttribute('class','btn btn-primary badge-pill btn-sm');
 
-      deleteBtn.appendChild(txtDelete);
-      deleteBtn.addEventListener('click',function(){deleteAlert(posts[post].id)});
-      updateBtn.appendChild(txtUpdate);
-      updateBtn.addEventListener('click',function(){updateView(posts[post].id)});
+         deleteBtn.appendChild(txtDelete);
+         deleteBtn.addEventListener('click',function(){deleteAlert(posts[post].id)});
+         editBtn.appendChild(txtEdit);
+         editBtn.addEventListener('click',function(){letsEdit(posts[post].id)});
 
-	  newCell1.innerHTML = posts[post].id;
-	  newCell2.innerHTML = posts[post].title;
-	  newCell3.appendChild(updateBtn);
-	  newCell3.appendChild(deleteBtn);
+	 newCell1.innerHTML = posts[post].id;
+	 newCell2.innerHTML = posts[post].title;
+	 newCell3.appendChild(editBtn);
+	 newCell3.appendChild(deleteBtn);
 	}
 };
-
 
 function deleteAlert(id){
 	if(confirm('Are you sure you want to delete?')){
@@ -60,9 +61,8 @@ function deletPost(id){
 	catch(err){
 		alert(err);
 	}
-
 };
 
-function updateView(id){
-	alert('update view clicked');
+function letsEdit(id){
+	alert('Do some update');
 };
