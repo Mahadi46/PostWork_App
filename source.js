@@ -7,6 +7,7 @@ let output = '';
 const url = "https://jsonplaceholder.typicode.com/users/1/posts";
 
 const renderPosts = (posts)=>{
+
     posts.forEach(post => {
         output += `
         <div class="card mt-4 col-md-6 bg-light" >
@@ -18,7 +19,9 @@ const renderPosts = (posts)=>{
             <a href="#" class="card-link" id="delete-post">Delete</a>
           </div>
         </div>`;
+
     })
+
     postsList.innerHTML = output;
 }
 
@@ -30,7 +33,7 @@ fetch(url)
 
 postsList.addEventListener("click",(e)=>{
     
-    e.preventDefault();
+  e.preventDefault();
   let deleteBtn =e.target.id =="delete-post";
   let editBtn =e.target.id =="edit-post";
   let parent = e.target.parentElement;
@@ -43,12 +46,15 @@ postsList.addEventListener("click",(e)=>{
         fetch(`${url}/${id}`,{
         method: 'DELETE',
         })
+
         let td=parent.parentElement;
         let tf =td.parentElement;
         tf.removeChild(td);
     }
-  }
+  } 
+
   if(editBtn){
+
     let titleContent = parent.querySelector('.card-title').textContent;
     let bodyContent = parent.querySelector('.card-text').textContent;
     let newtitleContent = parent.querySelector('.card-title')
@@ -57,12 +63,12 @@ postsList.addEventListener("click",(e)=>{
     bodyValue.value = bodyContent;
   
     btnSubmit.addEventListener("click",(e)=>{
-    e.preventDefault();
+      e.preventDefault();
     
-     let a = titleValue.value;
-     let b = bodyValue.value;
+      let a = titleValue.value;
+      let b = bodyValue.value;
     
-     fetch(url,{
+      fetch(url,{
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -73,8 +79,8 @@ postsList.addEventListener("click",(e)=>{
             userId : 1
         })
         
-    })
-    .then(res => res.json())
+      })
+      .then(res => res.json())
         .then((post)=>{
            
             
@@ -82,33 +88,71 @@ postsList.addEventListener("click",(e)=>{
             newbodyContent.textContent = post.body;
         })
    
-   }) 
+    }) 
   
-  } 
+  }
+   
 })
   
-   
+
 addpostform.addEventListener("submit",(e)=>{
     e.preventDefault();
+
     fetch(url,{
+
         method: 'POST',
         headers:{
             'Content-Type': 'application/json'
         },
+
         body: JSON.stringify({
         userId: 1,
         title: titleValue.value,
         body: bodyValue.value
         })
     })
+
     .then(res => res.json())
     .then(data =>{
         const dataArr =[]
         dataArr.push(data);
         renderPosts(dataArr);
         alert("Successfully added")
-
     })
+
     titleValue.value = '';
     bodyValue.value = '';
+
+})
+
+
+addpostform.addEventListener("keyup",(e)=>{
+
+    if(event.which===13){
+        e.preventDefault();
+
+        fetch(url,{
+
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            userId: 1,
+            title: titleValue.value,
+            body: bodyValue.value
+            })
+        })
+        .then(res => res.json())
+        .then(data =>{
+            const dataArr =[]
+            dataArr.push(data);
+            renderPosts(dataArr);
+            alert("Successfully added")
+    
+        })
+
+        titleValue.value = '';
+        bodyValue.value = '';
+    }
 })
