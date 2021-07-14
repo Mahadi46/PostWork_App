@@ -3,9 +3,8 @@ const addpostform = document.querySelector('.add-post-form')
 const titleValue = document.getElementById('title-value')
 const bodyValue = document.getElementById('body-value')
 let addBtn  = document.getElementById("addBtn")
-let saveBtn = document.getElementById("saveBtn")
+
 let output = '';
-let url = "https://jsonplaceholder.typicode.com/users/1/posts";
 
 const renderPosts = (posts)=>{
 
@@ -16,7 +15,7 @@ const renderPosts = (posts)=>{
             <h5 class="card-title">${post.title}</h5>
             <h6 class ="card-subtitle mb-2">${post.id}</h6>
             <p class="card-text">${post.body}</p>
-            <a href="#" class="card-link" onclick="editPosts(${post.id})">Edit</a>
+            <a href="#" class="card-link" onclick="editPosts()">Edit</a>
             <a href="#" class="card-link" id="delete-post">Delete</a>
           </div>
         </div>`;
@@ -25,17 +24,19 @@ const renderPosts = (posts)=>{
 
     postsList.innerHTML = output;
 }
-
-
+let url ='https://jsonplaceholder.typicode.com/posts'
 
 fetch(url)
 .then(res => res.json())
 .then(data => renderPosts(data))
 
+
+
 postsList.addEventListener("click",(e)=>{
     
   e.preventDefault();
   let deleteBtn =e.target.id =="delete-post";
+  
   let parent = e.target.parentElement;
   let id = e.target.parentElement.dataset.id;
 
@@ -43,7 +44,7 @@ postsList.addEventListener("click",(e)=>{
 
     if(confirm('Are you sure you want to delete?'))
     {
-        let  url = "https://jsonplaceholder.typicode.com/users/1/posts"
+        let  url = "https://jsonplaceholder.typicode.com/posts"
         fetch(`${url}/${id}`,{
         method: 'DELETE',
         })
@@ -60,30 +61,30 @@ function editPosts(index){
     
     let titleContent = document.querySelector('.card-title').textContent;
     let bodyContent = document.querySelector('.card-text').textContent;
-    let newtitleContent = document.querySelector('.card-title')
-    let newbodyContent = document.querySelector('.card-text')
+    console.log(bodyContent)
     
-    titleValue.value = titleContent;
-    bodyValue.value = bodyContent;
-    
-    let saveBtn = document.getElementById("saveBtn")
+    titleValue.innerHTML = titleContent;
+    bodyValue.innerHTML = bodyContent;
+ 
 
-    saveBtn.addEventListener("click",(e)=>{
+  let saveBtn = document.getElementById("saveBtn")
+
+  saveBtn.addEventListener("click",(e)=>{
        
-
-       e.preventDefault();
+    e.preventDefault();
     
-      let a = titleValue.value;
-      let b = bodyValue.value;
-      console.log(a)
+    let a = titleValue.value;
+    let b = bodyValue.value;
+    let url = `https://jsonplaceholder.typicode.com/posts/${postId}`;
+
       fetch(url,{
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            title : a,
-            body  : b,
+            title :titleValue.value,
+            body  :bodyValue.value,
             userId : 1
         })
         
@@ -92,15 +93,18 @@ function editPosts(index){
       .then(res => res.json())
         .then((post)=>{
            
-            
+            let newtitleContent = document.querySelector('.card-title')
+            let newbodyContent = document.querySelector('.card-text')
+            console.log(newtitleContent)
+    
             newtitleContent.textContent = post.title;
             newbodyContent.textContent = post.body;
         })
    
     }) 
 
-}
   
+
 
 addBtn.addEventListener("click",(e)=>{
     e.preventDefault();
