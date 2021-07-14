@@ -2,9 +2,10 @@ const postsList = document.querySelector('.posts-list')
 const addpostform = document.querySelector('.add-post-form')
 const titleValue = document.getElementById('title-value')
 const bodyValue = document.getElementById('body-value')
-const btnSubmit = document.querySelector('.btn')
+let addBtn  = document.getElementById("addBtn")
+let saveBtn = document.getElementById("saveBtn")
 let output = '';
-const url = "https://jsonplaceholder.typicode.com/users/1/posts";
+let url = "https://jsonplaceholder.typicode.com/users/1/posts";
 
 const renderPosts = (posts)=>{
 
@@ -15,7 +16,7 @@ const renderPosts = (posts)=>{
             <h5 class="card-title">${post.title}</h5>
             <h6 class ="card-subtitle mb-2">${post.id}</h6>
             <p class="card-text">${post.body}</p>
-            <a href="#" class="card-link" id="edit-post">Edit</a>
+            <a href="#" class="card-link" onclick="editPosts(${post.id})">Edit</a>
             <a href="#" class="card-link" id="delete-post">Delete</a>
           </div>
         </div>`;
@@ -35,14 +36,14 @@ postsList.addEventListener("click",(e)=>{
     
   e.preventDefault();
   let deleteBtn =e.target.id =="delete-post";
-  let editBtn =e.target.id =="edit-post";
   let parent = e.target.parentElement;
-  let id= e.target.parentElement.dataset.id;
+  let id = e.target.parentElement.dataset.id;
 
   if(deleteBtn){
 
     if(confirm('Are you sure you want to delete?'))
     {
+        let  url = "https://jsonplaceholder.typicode.com/users/1/posts"
         fetch(`${url}/${id}`,{
         method: 'DELETE',
         })
@@ -51,23 +52,30 @@ postsList.addEventListener("click",(e)=>{
         let tf =td.parentElement;
         tf.removeChild(td);
     }
-  } 
+  }
+})
 
-  if(editBtn){
 
-    let titleContent = parent.querySelector('.card-title').textContent;
-    let bodyContent = parent.querySelector('.card-text').textContent;
-    let newtitleContent = parent.querySelector('.card-title')
-    let newbodyContent = parent.querySelector('.card-text')
+function editPosts(index){
+    
+    let titleContent = document.querySelector('.card-title').textContent;
+    let bodyContent = document.querySelector('.card-text').textContent;
+    let newtitleContent = document.querySelector('.card-title')
+    let newbodyContent = document.querySelector('.card-text')
+    
     titleValue.value = titleContent;
     bodyValue.value = bodyContent;
-  
-    btnSubmit.addEventListener("click",(e)=>{
-      e.preventDefault();
+    
+    let saveBtn = document.getElementById("saveBtn")
+
+    saveBtn.addEventListener("click",(e)=>{
+       
+
+       e.preventDefault();
     
       let a = titleValue.value;
       let b = bodyValue.value;
-    
+      console.log(a)
       fetch(url,{
         method: 'PUT',
         headers: {
@@ -80,6 +88,7 @@ postsList.addEventListener("click",(e)=>{
         })
         
       })
+      
       .then(res => res.json())
         .then((post)=>{
            
@@ -89,15 +98,24 @@ postsList.addEventListener("click",(e)=>{
         })
    
     }) 
-  
-  }
-   
-})
+
+}
   
 
-addpostform.addEventListener("submit",(e)=>{
+addBtn.addEventListener("click",(e)=>{
     e.preventDefault();
 
+     addList();
+     
+
+   
+})
+
+
+
+function addList(){
+   
+    let url = 'https://jsonplaceholder.typicode.com/posts'
     fetch(url,{
 
         method: 'POST',
@@ -111,6 +129,8 @@ addpostform.addEventListener("submit",(e)=>{
         body: bodyValue.value
         })
     })
+  
+  
 
     .then(res => res.json())
     .then(data =>{
@@ -118,41 +138,19 @@ addpostform.addEventListener("submit",(e)=>{
         dataArr.push(data);
         renderPosts(dataArr);
         alert("Successfully added")
+        
     })
 
     titleValue.value = '';
     bodyValue.value = '';
-
-})
+}
 
 
 addpostform.addEventListener("keyup",(e)=>{
 
     if(event.which===13){
         e.preventDefault();
-
-        fetch(url,{
-
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-            userId: 1,
-            title: titleValue.value,
-            body: bodyValue.value
-            })
-        })
-        .then(res => res.json())
-        .then(data =>{
-            const dataArr =[]
-            dataArr.push(data);
-            renderPosts(dataArr);
-            alert("Successfully added")
-    
-        })
-
-        titleValue.value = '';
-        bodyValue.value = '';
+        addList();
     }
+
 })
