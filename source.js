@@ -4,10 +4,11 @@ const titleValue = document.getElementById('title-value')
 const bodyValue = document.getElementById('body-value')
 let addBtn  = document.getElementById("addBtn")
 let output = '';
-let url = "https://jsonplaceholder.typicode.com/posts/";
+const url = "https://jsonplaceholder.typicode.com/posts";
 
 document.addEventListener('DOMContentLoaded', () => {
-   fetch('https://jsonplaceholder.typicode.com/posts')
+
+   fetch(url)
   .then((response) => response.json())
   .then((posts) => renderPosts(posts))
   .catch((err)=>alert(`${err.name} occurs!`))
@@ -22,8 +23,8 @@ function renderPosts(posts) {
             <h6 class ="card-subtitle mb-2" id= "postId">Post Id : ${post.id}</h6>
             <h6 class ="card-subtitle mb-2" id = "userId">${post.userId}</h6>
             <p class="card-text" id="postBody">${post.body}</p>
-            <a href="#" class="card-link" onclick="editPosts(${post.id})">Edit</a>
-            <a href="#" class="card-link" onclick="deletPosts(${post.id})">Delete</a>
+            <a href="#" class="card-link" onclick="editPost(${post.id})">Edit</a>
+            <a href="#" class="card-link" onclick="deletePost(${post.id})">Delete</a>
           </div>
         </div>`;
 
@@ -32,28 +33,30 @@ function renderPosts(posts) {
     postsList.innerHTML = output;
 }
 
-function deletPosts(postId) {
+function deletePost(postId) {
 
     let deleteBtn =event.target;
-  let parent = deleteBtn.parentElement;
-  let id = parent.dataset.id;
+    let parent = deleteBtn.parentElement;
+    let id = parent.dataset.id;
 
     if(confirm('Are you sure you want to delete?'))
-    {
-        let  url = "https://jsonplaceholder.typicode.com/posts";
-        let td=parent.parentElement;
-        let tf =td.parentElement;
 
-        fetch(`${url}/${id}`,{
+    {
+        let grandParent=parent.parentElement;
+        let bossParent =grandParent.parentElement;
+
+        fetch(`${url}/${postId}`,{
         method: 'DELETE',
         })
+
         .then(()=>
-        tf.removeChild(td))
+        bossParent.removeChild(grandParent))
     }
 }
 
 
-function editPosts(postId){
+function editPost(postId){
+
     let updatePostDiv = document.getElementById('updatePostDiv');
     updatePostDiv.style.display = 'block';
 
@@ -65,47 +68,48 @@ function editPosts(postId){
     let userId = parent.querySelector('#userId').textContent;
     let postBodyField = updatePostDiv.querySelector('#postBodyField');
     let postTitleField = updatePostDiv.querySelector('#postTitleField');
-
-    // let newtitleContent = parent.querySelector('.card-title postTitle');
-    // let newbodyContent = parent.querySelector('.card-title postBody');
     
     postTitleField.value = titleContent;
     postBodyField.value = bodyContent;
 
     saveUpdateBtn.addEventListener("click",(e)=>{
+
        e.preventDefault();
     
-      let a =  postTitleField.value;
-      let b = postBodyField.value;
-      let url = `https://jsonplaceholder.typicode.com/posts/${postId}`;
-      fetch(url, {
+      let newPostTitleField =  postTitleField.value;
+      let newPostBodyField = postBodyField.value;
+
+      fetch(`${url}/${postId}`, {
           method: 'PUT',
           body: JSON.stringify({
             id: postId,
-            title: a,
-            body: b,
+            title:  newPostTitleField,
+            body:  newPostBodyField ,
             userId: parseInt(userId),
           }),
           headers: {
             'Content-type': 'application/json; charset=UTF-8',
           },
+
         })
+
           .then((response) => response.json())
           .then((post) => {
             parent.querySelector('#postTitle').innerHTML = post.title;
             parent.querySelector('#postBody').innerHTML = post.body;
             alert('Update successfull')
         })
+
         .catch((err)=>alert(`${err.name} occurs`)) ;
         updatePostDiv.style.display = 'none'; 
         
       })
       
-
 }
   
 
 addBtn.addEventListener("click",(e)=>{
+
     e.preventDefault();
 
      addList();
@@ -118,7 +122,6 @@ addBtn.addEventListener("click",(e)=>{
 
 function addList(){
    
-    let url = 'https://jsonplaceholder.typicode.com/posts'
     fetch(url,{
 
         method: 'POST',
@@ -137,6 +140,7 @@ function addList(){
 
     .then(res => res.json())
     .then(data =>{
+
         const dataArr =[]
         dataArr.push(data);
         renderPosts(dataArr);
@@ -149,11 +153,13 @@ function addList(){
 }
 
 
-addBtn.addEventListener("keyup",(e)=>{
+bodyValue.addEventListener("keyup",(e)=>{
 
     if(event.which===13){
+
         e.preventDefault();
         addList();
     }
 
 })
+
